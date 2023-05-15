@@ -10,7 +10,7 @@ function wrap {
 "
 }
 
-wrap jenv global 17
+wrap jenv global 17.0
 
 wrap cd spring-petclinic
 

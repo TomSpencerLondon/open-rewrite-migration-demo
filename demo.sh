@@ -14,13 +14,18 @@ function wrap {
 "
 }
 
-clear '# First we remove our .m2 repository folder
+clear
+
+echo '# We remove our .m2 repository folder
 # This is to ensure there are no conflicts'
 
 wrap rm -rf ~/.m2/repository
+clear
+echo '# First we clone the petclinic repository'
+wrap git clone git@github.com:spring-projects/spring-petclinic.git
 
 clear
-echo '# First we start a new branch from the 1.5.x tag of the Spring PetClinic project'
+echo '# Next we start a new branch from the 1.5.x tag of the Spring PetClinic project'
 wrap cd spring-petclinic
 git reset --hard
 git clean -f
@@ -34,7 +39,7 @@ read -p ""
 
 echo '
 # Next we ensure we are running Java 8 for now.'
-wrap jenv global 1.8.0.362-362
+wrap jenv global 1.8
 
 echo '# Then we upgrade the Maven wrapper for compatibility, and to add some color.'
 wrap ./mvnw wrapper:wrapper -Dmaven=3.8.7
@@ -59,6 +64,12 @@ clear
 echo '# We will migrate the Spring PetClinic to Spring Boot 2.
 # These recipes are in the added Rewrite Spring Module.
 '
+#       <dependency>
+#          <groupId>javax.xml.bind</groupId>
+#          <artifactId>jaxb-api</artifactId>
+#          <version>2.2.12</version>
+#      </dependency>
+
 wrap ./mvnw org.openrewrite.maven:rewrite-maven-plugin:4.36.0:run \
        -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:4.29.0 \
        -DactiveRecipes=org.openrewrite.java.spring.boot2.SpringBoot1To2Migration
