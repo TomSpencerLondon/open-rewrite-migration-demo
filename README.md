@@ -218,3 +218,153 @@ You can put source code in there and then see the node selected in the Tree.
 This link from openrewrite is quite informative on how to create your own OpenRewrite recipes:
 https://docs.openrewrite.org/authoring-recipes
 
+The OpenRewrite tool has two advantages:
+1. Exact type preservation
+2. Format preservation - changes will look like a colleague worked on your code
+
+### OpenRewrite Recipes
+OpenRewrite offers recipes like lego building blocks for search and refactoring operations. Recipes consist of standalone operations
+and can be linked together. We can change types, methods and dependencies and plugins.
+
+The Recipes follow a Visitor pattern to match and modify elements. This is an example of a Recipe:
+https://docs.openrewrite.org/concepts-explanations/recipes
+```java
+public class ChangeType extends Recipe {
+
+    private final String oldFullyQualifiedTypeName;
+    private final String newFullyQualifiedTypeName;
+
+    // Recipe configuration is injected via the constructor
+    @JsonCreator
+    public ChangeType(
+        @JsonProperty("oldFullyQualifiedTypeName") String oldFullyQualifiedTypeName, 
+        @JsonProperty("newFullQualifiedTypeName") String newFullQualifiedTypeName
+    ) {
+        this.oldFullyQualifiedTypeName = oldFullyQualifiedTypeName;
+        this.newFullQualifiedTypeName = newFullQualifiedTypeName;
+    }
+
+    @Override
+    protected JavaVisitor<ExecutionContext> getVisitor() {
+        // Construct an instance of a visitor that will operate over the LSTs.
+        return new ChangeTypeVisitor(oldFullyQualifiedTypeName, newFullyQualifiedTypeName);
+    }
+
+    // In many cases, the visitor is implemented as a private, inner class. This
+    // ensures that the visitor is only used via its managed, configured recipe. 
+    private class ChangeTypeVisitor extends JavaVisitor<ExecutionContext> {
+        // ...
+    }
+
+}
+```
+This is an example of a JUnit5Migration:
+```java
+package org.example.testing;
+
+import org.openrewrite.java.ChangeType;
+
+public class JUnit5Migration extends Recipe {
+
+    public JUnit5Migration(boolean addJunit5Dependencies) {
+        // Add nested recipes to the execution pipeline via doNext()
+        doNext(new ChangeType("org.junit.Test", "org.junit.jupiter.api.Test"));
+        doNext(new AssertToAssertions());
+        doNext(new RemovePublicTestModifiers());
+
+        // Recipe can be optionally configured to add the JUnit 5 dependencies
+        if (addJUnitDependencies) {
+            doNext(new AddJUnit5Dependencies());
+        }
+    }
+}
+```
+This is a JUnit5 recipe in yaml:
+```yaml
+type: specs.openrewrite.org/v1beta/recipe
+name: org.openrewrite.java.testing.junit5.JUnit4To5Migration
+recipeList:
+  - org.openrewrite.java.ChangeType:
+    oldFullyQualifiedTypeName: org.junit.Test
+    newFullyQualifiedTypeName: org.junit.jupiter.api.Test
+  - org.openrewrite.java.testing.junit5.UpdateBeforeAfterAnnotations
+  - org.openrewrite.java.testing.junit5.AssertToAssertions
+  - org.openrewrite.java.testing.junit5.StaticImports
+  - org.openrewrite.java.testing.junit5.ExpectedExceptionToAssertThrows
+```
+
+This video is quite interesting on using OpenRewrite with OpenAI:
+https://www.youtube.com/watch?v=4NOFBgrVuEM
+
+### Modules
+Modules tie together the recipes into LegoSets for a specific purpose and offer a complete migration.
+
+### Running Recipes
+1. Apply OpenRewrite plugin
+2. With Module dependency
+3. Run migration recipe
+
+```bash
+./mvnw org.openrewrite.maven:rewrite-maven-plugin:4.24.0:run \
+  -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:4.21.0
+  -DactiveRecipes=org.openrewrite.java.spring.boot2.SpringBoot1To2Migration
+```
+
+### Petclinic Migration
+The scripts in this repo migrate PetClinic:
+- SpringBoot 1.5.x -> 2.x
+- Java 8 -> Java 17
+- JUnit 4 -> JUnit 5
+
+We can run the script on our computer if we have jenv installed. We may prefer SDKMan. As mentioned above,
+the main edits we have to do to the POM after downloading spring-petclinic are change wro4j to 1.9 and add jaxb:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.springframework.samples</groupId>
+    <artifactId>spring-petclinic</artifactId>
+    <version>1.5.1</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.14</version>
+    </parent>
+    <name>petclinic</name>
+
+    <properties>
+
+        <!-- Generic properties -->
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Web dependencies -->
+        <webjars-bootstrap.version>3.3.6</webjars-bootstrap.version>
+        <webjars-jquery-ui.version>1.11.4</webjars-jquery-ui.version>
+        <webjars-jquery.version>2.2.4</webjars-jquery.version>
+        <wro4j.version>1.9.0</wro4j.version>
+
+        <cobertura.version>2.7</cobertura.version>
+
+    </properties>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+       <dependency>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+          <version>2.2.12</version>
+      </dependency>
+    </dependencies>
+</project>
+```
