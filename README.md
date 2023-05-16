@@ -377,9 +377,19 @@ We can reduce technical debt with recipes. We can also enforce code style. We ca
 Spring Boot Migrator aims to help developers move from non Spring Boot applications to Spring Boot. It provides recipes for automated migrations.
 It starts by creating an HTML report.
 
-This link is useful for running the jar:
+This link is useful for running the spring boot jar upgrade jar:
 https://github.com/spring-projects-experimental/spring-boot-migrator
 
 This is what the report looks like for our starting position on Spring 1.5:
 ![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/13b55f71-1dae-4b73-a524-e606bd08c43b)
+
+The SpringBoot migrator jar is on the same link:
+https://github.com/spring-projects-experimental/spring-boot-migrator
+![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/7fbe7fd6-4852-4c6f-9544-6b09a15ae042)
+
+We can then decide if we want to run the recipes.
+
+### Moderne
+The company behind openrewrite is Moderne:
+https://www.moderne.io/
 
