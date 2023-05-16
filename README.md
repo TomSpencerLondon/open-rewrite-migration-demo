@@ -368,3 +368,18 @@ the main edits we have to do to the POM after downloading spring-petclinic are c
     </dependencies>
 </project>
 ```
+
+### OpenRewrite Applications
+As well as migrating versions we can also migrate from one framework to another. We can switch from Log4J to SLF4J and JUnit to AssertJ.
+We can reduce technical debt with recipes. We can also enforce code style. We can also add custom recipes.
+
+### Spring Boot Migrator
+Spring Boot Migrator aims to help developers move from non Spring Boot applications to Spring Boot. It provides recipes for automated migrations.
+It starts by creating an HTML report.
+
+This link is useful for running the jar:
+https://github.com/spring-projects-experimental/spring-boot-migrator
+
+This is what the report looks like for our starting position on Spring 1.5:
+![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/13b55f71-1dae-4b73-a524-e606bd08c43b)
+
