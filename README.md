@@ -59,4 +59,158 @@ The main edits we have to do to the POM after downloading spring-petclinic are c
 </project>
 ```
 
-### About 
+### About Open Rewrite
+This video is quite good for running the migrations:
+https://www.youtube.com/watch?v=d8xU24x7Jqo
+Tim te Beeks birthday is on 26 or 27 May.
+
+### Major migrations over the past decade
+- 2011 Java 7:
+```text
+try (Resource closeable = new Resource() { ... }
+List<String> diamonds = new ArrayList<>();
+java.nio.file.Path
+```
+- 2014 Java 8:
+```text
+(Integer x, Integer y) -> { return x + y; }
+LocalDate releaseDate = LocalDate.of(2014, 3, 18);
+```
+- 2014 Spring Boot 1.0:
+```text
+Jar not war
+Opinionated
+Non functionals
+No XML
+```
+- 2015 Building Microservices, Sam Newman:
+```text
+Decomposition
+Communication & failures
+NoSQL
+Kubernetes 1.0
+```
+- 2017 Junit 5:
+```text
+@BeforeEach...
+@Rule -> Extension
+@RunWith -> @ExtendWith
+assertThrows(Exception.class, () -> validate(invalidArgument))
+```
+- 2018 Java 11:
+```text
+List.of()
+var
+HttpClient
+```
+~~java.xml.ws~~
+~~java.xml.bind~~
+
+- 2018 Spring Boot 2.0:
+~~Java 7~~
+```text
+Configuration Property Binding
+WebFlux
+Micrometer.io
+Spring Data, Security, Cloud, Messaging, ...
+```
+- 2019 Github + Gitlab:
+```text
+Github buys Dependabot
+WhiteSource buys Renovate
+Increased awareness
+```
+- 2021 Java 17:
+```text
+Text blocks
+record Point (int x, int y) {}
+if (object instance of Integer i) { }
+return switch(...) { ... }
+--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+```
+- 2022 vulnerabilities:
+```text
+Log4Shell
+Spring4Shell
+```
+- 2022 Spring Boot 3.0:
+```text
+Java 17 baseline
+Jakarta EE 9
+Kotlin 1.6
+Groovy 4.0
+Gradle 7.3
+```
+This talk by Juergen Hoeller on Spring Framework 6:
+https://www.youtube.com/watch?v=ikQ06uwro1M
+
+He also did a talk on the history of Spring in 15 mins (actually 24 mins):
+https://www.youtube.com/watch?v=qNDMvyUfkpA
+
+All these developments show that change is the only constant. It is exciting when new versions come out but some of the work can be repetitive.
+
+### OpenRewrite
+This is quite useful for a list of OpenRewrite recipes:
+https://docs.openrewrite.org/recipes/java
+
+OpenRewrite promises to make migrations easy. You can upgrade Java, Frameworks and also migrate between frameworks.
+It was started at Netflix for internal logging framework -> SLF4J. This required transformation. They turned source code into
+an Abstract Syntax tree parser and minipulation. This produces minimal changes.
+
+The same developers worked on Spinnaker. Spinnaker is an open-source, multi-cloud continuous delivery platform that combines a powerful and flexible pipeline management system with integrations to the major cloud providers.
+They used the same parse to move from Spring Boot 1.x -> 2.x, JUnit 4 -> JUnit 5. The project is now open sourced on the Apache License 2.0.
+This is the company behind OpenRewrite:
+https://www.moderne.io/
+
+The tool has recipes for:
+- Java
+- XML
+- Groovy
+- YAML
+- Maven
+- Gradle
+- JUnit5
+- AssertJ
+- Spring
+- Micronaut
+- Quarkus
+- Terraform
+- Kubernetes
+
+### Abstract Syntax Tree
+There are other parsers like the Java parser. An Abstract Syntax Tree is a tree data structure that best represents the syntactic structure of source code.
+It helps understand type attribution and format preservation.
+
+This video is quite useful for understanding Abstract Syntax Trees:
+https://www.youtube.com/watch?v=tM_S-pa4xDk
+
+![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/c853cf55-3564-4951-9f53-2fad4c716344)
+
+This is a representation of the Abstract Syntax Tree above in JSON:
+```json
+{
+  "type": "BinaryExpression",
+  "left": {
+    "type": "NumericLiteral",
+    "value": 2
+  },
+  "operator": "+",
+  "right": {
+    "type": "BinaryExpression",
+    "left": {
+      "type": "NumericLiteral",
+      "value": 4
+    },
+    "operator": "*",
+    "right": {
+      "type": "NumericLiteral",
+      "value": 10
+    }
+  }
+}
+```
+
+This site is useful for looking at ASTs in practice:
+https://astexplorer.net/
+
+You can put source code in there and then see the node selected in the Tree.
