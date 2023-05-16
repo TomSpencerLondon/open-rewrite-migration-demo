@@ -214,3 +214,7 @@ This site is useful for looking at ASTs in practice:
 https://astexplorer.net/
 
 You can put source code in there and then see the node selected in the Tree.
+
+This link from openrewrite is quite informative on how to create your own OpenRewrite recipes:
+https://docs.openrewrite.org/authoring-recipes
+
