@@ -369,6 +369,22 @@ the main edits we have to do to the POM after downloading spring-petclinic are c
 </project>
 ```
 
+### Note on wrap command in script
+
+This Bash function, named wrap, does a few things. It's likely intended to be used as a debugging or learning tool. Here's a breakdown of the steps in the function:
+echo: This command is used to print something to the standard output (usually the terminal). In this case, it just prints a newline.
+echo $ $(printf "%q " "$@"): This line prints the command that is going to be executed. The $@ variable in bash refers to all command line arguments passed to the function or script. The printf "%q " "$@" command will safely quote these arguments if necessary. The echo command then prints these quoted arguments, preceded by a $ character, which would represent how the command would look if you ran it in the terminal.
+read -p "": This line is waiting for the user to press Enter before the command is executed.
+eval $(printf "%q " "$@"): This line executes the command. The eval command in bash allows you to execute arbitrary commands. It's using printf again to ensure that arguments are safely quoted. This is especially important when using eval since it can execute any command.
+read -p "\nOK\n": After the command has executed, this line prints "OK" and then waits for the user to press Enter again.
+In summary, this function will:
+- Print the command it's going to execute
+- Wait for the user to press Enter
+- Execute the command
+- Print "OK" and then wait for the user to press Enter again 
+
+- It provides a way of manually stepping through each command, so you can see what each command is doing. This can be useful when debugging a complex script, or when learning how bash scripts work.
+
 ### OpenRewrite Applications
 As well as migrating versions we can also migrate from one framework to another. We can switch from Log4J to SLF4J and JUnit to AssertJ.
 We can reduce technical debt with recipes. We can also enforce code style. We can also add custom recipes.
@@ -459,4 +475,3 @@ The spring boot migrator can take commands from a text file with:
 java -jar spring-boot-migrator.jar @commands.txt
 ```
 where commands.txt is the file where you keep the commands:
-
