@@ -393,3 +393,70 @@ We can then decide if we want to run the recipes.
 The company behind openrewrite is Moderne:
 https://www.moderne.io/
 
+OpenRewrite has office hours with Tim Te Beek also:
+![image](https://github.com/TomSpencerLondon/LeetCode/assets/27693622/2ea9cc8e-c262-470e-9eb6-359d8226969e)
+
+### Links:
+- docs.openrewrite.org
+- github.com/openrewrite
+- github.com/spring-projects-experimental/spring-boot-migrator
+- app.moderne.io
+
+This is Tim te Beek's blog post:
+https://blog.jdriven.com/2022/03/major-migrations-made-easy-with-openrewrite/
+
+
+### Spring Boot Migrator (continued)
+This video is quite interesting from Fabian Krueger the Spring Boot Migrator lead:
+https://www.youtube.com/watch?v=qkgdjIsNYA0
+
+#### The Problem - Software Migration / Modernization
+Examples:
+- JEE to Spring Boot
+- Legacy Spring (XML) to Boot
+- Mulesoft to Spring Integration
+
+Problems:
+- Mainly mapping programming models
+- Repetitive
+- Costly
+
+
+#### The Problem - Introduce Spring Modules
+Examples:
+- Spring Cloud Config Server
+- Spring Cloud Contract
+- Resilience
+
+Problems:
+- Often requires solid understanding
+- Problems sometimes hard to find
+
+#### The Problem - Upgrades
+Examples:
+- Every 2 - 4 weeks a minor Spring Framework release
+- Every 6 month a new Java version
+- Every year a new Spring Framework major release
+
+Problems:
+- Short release cycles require frequent upgrades
+- Not upgrading implies security risks and technical debt
+- cumbersome
+- No immediate business value
+
+#### Automation
+Solution for the above problems should include automation. Mission:
+```text
+Spring Boot Migrator (SBM) aims to help developers upgrade or migrate to Spring Boot by providing recipes for automated migrations
+```
+SBM replaced JavaParser with OpenRewrite from Jonathan Schneider.
+
+The main migration we are interested in here is:
+- Spring Boot 2.7 -> 3.0 Upgrade
+
+The spring boot migrator can take commands from a text file with:
+```bash
+java -jar spring-boot-migrator.jar @commands.txt
+```
+where commands.txt is the file where you keep the commands:
+
