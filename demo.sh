@@ -14,13 +14,6 @@ function wrap {
 "
 }
 
-clear
-
-echo '# We remove our .m2 repository folder
-# This is to ensure there are no conflicts'
-
-wrap rm -rf ~/.m2/repository
-clear
 echo '# First we clone the petclinic repository'
 wrap git clone git@github.com:spring-projects/spring-petclinic.git
 
